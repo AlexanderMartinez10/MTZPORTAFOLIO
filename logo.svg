@@ -1,0 +1,20 @@
+<svg width="800" height="200" viewBox="0 0 800 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="ultraGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <!-- Reducido stdDeviation para bajar intensidad -->
+            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+    </defs>
+    
+    <g filter="url(#ultraGlow)">
+        <!-- M (Desplazada a la izquierda) -->
+        <path d="M40 160V50L100 120L160 50V160H130V90L100 125L70 90V160H40Z" fill="#00ff9f" />
+        
+        <!-- T (Centrada con más espacio) -->
+        <path d="M320 50H480V80H430V165L400 180L370 165V80H320V50Z" fill="#00ff9f" />
+        
+        <!-- Z (Desplazada a la derecha) -->
+        <path d="M640 50H770V80L690 130H770V160H640V130L720 80H640V50Z" fill="#00ff9f" />
+    </g>
+</svg>
