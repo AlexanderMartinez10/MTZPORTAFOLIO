@@ -444,13 +444,20 @@ function convertVideoToGif(file) {
     
     gifshot.createGIF({
         video: [videoUrl],
-        gifWidth: 320,
-        gifHeight: 180,
-        interval: 0.1,        // 10 FPS
-        numFrames: 30,       // 3 seconds capture
-        frameDuration: 1,
-        sampleInterval: 10,
-        numWorkers: 2
+        gifWidth: 240,         // Smaller resolution for ultra-fast encoding
+        gifHeight: 135,
+        interval: 0.2,        // 5 FPS (Fast enough for a preview)
+        numFrames: 10,        // Only 2 seconds of video
+        frameDuration: 2,     // Visual speed adjustment
+        sampleInterval: 35,   // Very high sample interval for instant-like encoding
+        numWorkers: 4,
+        keepCameraOn: false,
+        progressCallback: function(captureProgress) {
+            const progressInfo = document.getElementById('p-progress-text');
+            if (progressInfo) {
+                progressInfo.innerText = "Procesando: " + Math.round(captureProgress * 100) + "%";
+            }
+        }
     }, function(obj) {
         if(!obj.error) {
             selectedFileBase64 = obj.image;
