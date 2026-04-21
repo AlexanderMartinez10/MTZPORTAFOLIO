@@ -38,7 +38,7 @@ let portfolio = JSON.parse(localStorage.getItem('mtz_portfolio')) || [
     { id: 3, title: 'Sistema de Cobros v2.0', gif: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGlnaDVqZmh4N3BxcXg1eHB6ZnlmeXh5eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l0MYt5jPR6QX5pnqM/giphy.gif', link: '#' }
 ];
 
-const reviews = [
+let reviews = JSON.parse(localStorage.getItem('mtz_reviews')) || [
     { name: "Andrés Gutiérrez", rubro: "Inmobiliaria", text: "MTZ transformó nuestra forma de captar clientes. La automatización de WhatsApp nos ahorró miles de dólares en personal.", stars: 5 },
     { name: "Lucía Méndez", rubro: "Dueña de Boutique", text: "Excelente atención y una estética futurista que dejó mis clientes asombrados. Mi tienda online vuela.", stars: 5 },
     { name: "Marcos Polo", rubro: "Restaurante Italo", text: "El sistema de pedidos y cobros es impecable. Todo funciona en piloto automático desde hace 6 meses.", stars: 5 }
@@ -49,6 +49,7 @@ let messages = JSON.parse(localStorage.getItem('mtz_messages')) || [];
 let logoClicks = 0;
 let logoTimer = null;
 let selectedFileBase64 = null;
+let robotInteracted = false;
 
 // ==========================================================================
 // 2. CORE LOGIC
@@ -128,7 +129,26 @@ function revealContent() {
         const el = document.getElementById(id);
         if (el) el.classList.remove('opacity-0');
     });
+
+    // Auto-show robot after 5 seconds
+    setTimeout(autoShowRobot, 5000);
 }
+
+function autoShowRobot() {
+    if (!robotInteracted) {
+        const bubble = document.getElementById('robot-bubble');
+        if (bubble.classList.contains('hidden')) {
+            toggleRobot();
+        }
+    }
+}
+
+// Remind user occasionally
+setInterval(() => {
+    if (!robotInteracted) {
+        autoShowRobot();
+    }
+}, 45000); // Every 45 seconds
 
 // ==========================================================================
 // 3. MATRIX EFFECT
@@ -194,17 +214,18 @@ function renderPortfolio() {
 
 function renderReviews() {
     const container = document.getElementById('reviews-container');
+    if (!container) return;
     container.innerHTML = reviews.map(r => `
-        <div class="glass-card p-10 rounded-[40px] flex flex-col justify-between border-white/5">
+        <div class="glass-card p-10 rounded-[40px] flex flex-col justify-between border-white/5 h-full">
             <div>
                 <div class="flex gap-1 text-neon mb-6">
-                    ${Array(r.stars).fill('<i class="fa-solid fa-star"></i>').join('')}
+                    ${Array(r.stars || 5).fill('<i class="fa-solid fa-star"></i>').join('')}
                 </div>
                 <p class="text-lg italic leading-relaxed text-white/90">"${r.text}"</p>
             </div>
             <div class="mt-8 flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-neon/10 flex items-center justify-center font-bold text-neon">
-                    ${r.name.charAt(0)}
+                <div class="w-12 h-12 rounded-full bg-neon/10 flex items-center justify-center font-bold text-neon border border-neon/20">
+                    ${r.name ? r.name.charAt(0) : '?'}
                 </div>
                 <div>
                     <p class="font-bold font-tech text-white">${r.name}</p>
@@ -213,6 +234,67 @@ function renderReviews() {
             </div>
         </div>
     `).join('');
+}
+
+// Review Interaction Logic
+function openReviewModal() {
+    document.getElementById('review-modal').classList.remove('hidden');
+    resetReviewStars();
+}
+
+function closeReviewModal() {
+    document.getElementById('review-modal').classList.add('hidden');
+}
+
+let selectedReviewStars = 5;
+function setReviewStars(n) {
+    selectedReviewStars = n;
+    const stars = document.querySelectorAll('.star-picker i');
+    stars.forEach((s, idx) => {
+        if (idx < n) {
+            s.classList.replace('fa-regular', 'fa-solid');
+            s.classList.add('text-neon');
+        } else {
+            s.classList.replace('fa-solid', 'fa-regular');
+            s.classList.remove('text-neon');
+        }
+    });
+}
+
+function resetReviewStars() {
+    setReviewStars(5);
+}
+
+function handleReviewSubmit(event) {
+    if (event) event.preventDefault();
+    
+    const name = document.getElementById('rev-name').value;
+    const rubro = document.getElementById('rev-rubro').value;
+    const text = document.getElementById('rev-text').value;
+
+    if (!name || !text) {
+        showToast("Por favor completa los campos obligatorios", "error");
+        return;
+    }
+
+    const newReview = {
+        name,
+        rubro: rubro || "Cliente",
+        text,
+        stars: selectedReviewStars
+    };
+
+    reviews.unshift(newReview);
+    localStorage.setItem('mtz_reviews', JSON.stringify(reviews));
+    
+    renderReviews();
+    closeReviewModal();
+    showToast("¡Gracias por tu reseña!", "success");
+    
+    // Clear form
+    document.getElementById('rev-name').value = '';
+    document.getElementById('rev-rubro').value = '';
+    document.getElementById('rev-text').value = '';
 }
 
 // ==========================================================================
@@ -475,4 +557,59 @@ function renderAdminMessages() {
             <p class="text-white/60 text-sm leading-relaxed bg-white/5 p-4 rounded-2xl italic">"${m.details || 'Sin detalles adicionales'}"</p>
         </div>
     `).join('');
+}
+
+// ==========================================================================
+// 7. ROBOT ASSISTANT LOGIC
+// ==========================================================================
+function toggleRobot() {
+    robotInteracted = true; // Stop auto-showing once they click
+    const bubble = document.getElementById('robot-bubble');
+    const isHidden = bubble.classList.toggle('hidden');
+    
+    if (!isHidden) {
+        // Reset to step 1
+        document.getElementById('robot-step-1').classList.remove('hidden');
+        document.getElementById('robot-step-2').classList.add('hidden');
+        document.getElementById('robot-step-thanks').classList.add('hidden');
+        resetRobotStars();
+    }
+}
+
+function handleRobotStar(n) {
+    robotInteracted = true; // User interacted!
+    const stars = document.querySelectorAll('.robot-stars i');
+    stars.forEach((s, idx) => {
+        if (idx < n) {
+            s.classList.replace('fa-regular', 'fa-solid');
+            s.classList.add('text-neon');
+        } else {
+            s.classList.replace('fa-solid', 'fa-regular');
+            s.classList.remove('text-neon');
+        }
+    });
+
+    setTimeout(() => {
+        document.getElementById('robot-step-1').classList.add('hidden');
+        document.getElementById('robot-step-2').classList.remove('hidden');
+    }, 600);
+}
+
+function resetRobotStars() {
+    const stars = document.querySelectorAll('.robot-stars i');
+    stars.forEach(s => {
+        s.classList.replace('fa-solid', 'fa-regular');
+        s.classList.remove('text-neon');
+    });
+}
+
+function handleRobotCTA() {
+    document.getElementById('robot-step-2').classList.add('hidden');
+    document.getElementById('robot-step-thanks').classList.remove('hidden');
+    
+    setTimeout(() => {
+        const msg = "¡Hola! Vi al robot en tu portafolio y me encantó la calidad de la página. Me gustaría solicitar mi propia web con esa misma calidad.";
+        openWhatsApp(msg);
+        toggleRobot();
+    }, 1500);
 }

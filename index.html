@@ -133,7 +133,7 @@
                         <span class="text-xs font-bold tracking-widest text-neon uppercase">Disponibilidad 24/7 • 2026</span>
                     </div>
 
-                    <h1 class="text-6xl md:text-8xl font-black font-tech leading-[0.9] tracking-tighter">
+                    <h1 class="text-4xl sm:text-6xl md:text-8xl font-black font-tech leading-[0.9] tracking-tighter">
                         CONSTRUIMOS TU <br>
                         <span class="neon-text">ÉXITO DIGITAL</span>
                     </h1>
@@ -143,11 +143,11 @@
                         <span class="text-white font-semibold italic">automatización web, cobranza de caja, infografías, portafolios, tiendas digitales y mucho más.</span>
                     </p>
 
-                    <div class="flex flex-wrap gap-5">
-                        <a href="#cuestionario" class="neon-button bg-neon text-black px-10 py-5 rounded-2xl font-black text-lg flex items-center gap-3 shadow-[0_0_30px_rgba(0,255,159,0.4)]">
+                    <div class="flex flex-col sm:flex-row gap-5">
+                        <a href="#cuestionario" class="neon-button bg-neon text-black px-10 py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(0,255,159,0.4)] w-full sm:w-auto">
                             SOLICITAR PROYECTO <i class="fa-solid fa-arrow-right"></i>
                         </a>
-                        <a onclick="openWhatsApp()" class="glass px-10 py-5 rounded-2xl font-bold text-lg flex items-center gap-3 border border-white/10 hover:bg-white/5 transition-all cursor-pointer">
+                        <a onclick="openWhatsApp()" class="glass px-10 py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 border border-white/10 hover:bg-white/5 transition-all cursor-pointer w-full sm:w-auto text-center">
                             <i class="fa-brands fa-whatsapp text-2xl text-neon"></i> HABLAR AHORA
                         </a>
                     </div>
@@ -411,6 +411,11 @@
                 <div class="text-center mb-16 space-y-4">
                     <h2 class="text-4xl md:text-6xl font-black font-tech section-title inline-block">Testimonios Reales</h2>
                     <p class="text-white/60 max-w-xl mx-auto">Lo que nuestros socios comerciales opinan sobre su transformación digital.</p>
+                    <div class="pt-8">
+                        <button onclick="openReviewModal()" class="bg-neon/10 border border-neon/30 text-neon px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-neon hover:text-black transition-all shadow-[0_0_20px_rgba(0,255,159,0.1)]">
+                            <i class="fa-solid fa-pen-to-square mr-2"></i> DEJAR MI RESEÑA
+                        </button>
+                    </div>
                 </div>
 
                 <div id="reviews-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -478,7 +483,7 @@
                                 class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-neon transition-all resize-none"></textarea>
                         </div>
 
-                        <button type="submit" class="w-full neon-button bg-neon text-black py-6 rounded-3xl font-black text-2xl uppercase tracking-tighter shadow-[0_0_30px_rgba(0,255,159,0.3)]">
+                        <button type="submit" class="w-full neon-button bg-neon text-black py-4 md:py-6 rounded-3xl font-black text-xl md:text-2xl uppercase tracking-tighter shadow-[0_0_30px_rgba(0,255,159,0.3)]">
                             GENERAR SOLICITUD
                         </button>
                     </form>
@@ -673,6 +678,89 @@
     <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[2000] bg-white text-black px-6 py-3 rounded-full font-bold shadow-2xl flex items-center gap-3 -translate-y-20 opacity-0 transition-all pointer-events-none">
         <i class="fa-solid fa-circle-check text-neon"></i>
         <span id="toast-msg">Mensaje enviado</span>
+    </div>
+
+    <!-- REVIEW MODAL -->
+    <div id="review-modal" class="fixed inset-0 z-[2000] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-space-black/90 backdrop-blur-xl" onclick="closeReviewModal()"></div>
+        <div class="relative glass max-w-lg w-full p-8 md:p-12 rounded-[40px] border-neon/20 fade-in">
+            <button class="absolute top-6 right-6 text-2xl text-white/50 hover:text-white" onclick="closeReviewModal()">×</button>
+            <div class="space-y-8">
+                <div class="text-center">
+                    <h3 class="text-3xl font-black font-tech uppercase tracking-tighter mb-2">Tu Experiencia</h3>
+                    <p class="text-white/40 text-xs">AYÚDANOS A SEGUIR MEJORANDO LA GALAXIA</p>
+                </div>
+
+                <form onsubmit="handleReviewSubmit(event)" class="space-y-6">
+                    <div class="flex justify-center gap-3 text-2xl star-picker mb-4">
+                        <i class="fa-solid fa-star text-neon cursor-pointer" onclick="setReviewStars(1)"></i>
+                        <i class="fa-solid fa-star text-neon cursor-pointer" onclick="setReviewStars(2)"></i>
+                        <i class="fa-solid fa-star text-neon cursor-pointer" onclick="setReviewStars(3)"></i>
+                        <i class="fa-solid fa-star text-neon cursor-pointer" onclick="setReviewStars(4)"></i>
+                        <i class="fa-solid fa-star text-neon cursor-pointer" onclick="setReviewStars(5)"></i>
+                    </div>
+
+                    <div class="space-y-4">
+                        <input type="text" id="rev-name" placeholder="TU NOMBRE" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-neon">
+                        <input type="text" id="rev-rubro" placeholder="TU RUBRO (Ej: Inmobiliaria)" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-neon">
+                        <textarea id="rev-text" placeholder="¿CÓMO FUE TU EXPERIENCIA CON MTZ?" required rows="4" class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-neon resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-neon text-black py-5 rounded-2xl font-black uppercase tracking-tighter shadow-lg hover:scale-[1.02] transition-transform">
+                        PUBLICAR RESEÑA
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROBOT ASSISTANT -->
+    <div id="robot-assistant" class="fixed bottom-8 left-8 z-[100] flex items-end gap-4 pointer-events-none">
+        <!-- Robot Bubble -->
+        <div id="robot-bubble" class="hidden glass p-6 rounded-[30px] rounded-bl-none border-neon/30 w-72 mb-4 pointer-events-auto shadow-[0_0_40px_rgba(0,255,159,0.15)] fade-in">
+            <div id="robot-step-1" class="space-y-4">
+                <p class="text-sm font-bold text-white/90">¿Qué tal ha sido tu experiencia en mi página de portafolio?</p>
+                <div class="flex gap-2 text-xl robot-stars">
+                    <i class="fa-regular fa-star hover:text-neon cursor-pointer transition-colors" onclick="handleRobotStar(1)"></i>
+                    <i class="fa-regular fa-star hover:text-neon cursor-pointer transition-colors" onclick="handleRobotStar(2)"></i>
+                    <i class="fa-regular fa-star hover:text-neon cursor-pointer transition-colors" onclick="handleRobotStar(3)"></i>
+                    <i class="fa-regular fa-star hover:text-neon cursor-pointer transition-colors" onclick="handleRobotStar(4)"></i>
+                    <i class="fa-regular fa-star hover:text-neon cursor-pointer transition-colors" onclick="handleRobotStar(5)"></i>
+                </div>
+            </div>
+            <div id="robot-step-2" class="hidden space-y-4">
+                <p class="text-sm font-bold text-white/90">¡Genial! ¿Te gustaría tener la misma calidad de página? ¿Qué esperas para pedir la tuya?</p>
+                <button onclick="handleRobotCTA()" class="w-full bg-neon text-black py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg">
+                    PEDIR MI PÁGINA
+                </button>
+            </div>
+            <div id="robot-step-thanks" class="hidden text-center py-4">
+                <p class="text-neon font-bold">¡Gracias por tu visita!</p>
+                <p class="text-[10px] text-white/40 uppercase mt-2">MTZ PROGRAMACIÓN</p>
+            </div>
+        </div>
+
+        <!-- Robot Body -->
+        <div onclick="toggleRobot()" class="w-16 h-16 bg-space-black border border-neon/30 rounded-2xl shadow-[0_0_20px_rgba(0,255,159,0.2)] flex items-center justify-center cursor-pointer pointer-events-auto hover:border-neon hover:scale-110 transition-all robot-float relative group">
+            <svg viewBox="0 0 100 100" class="w-10 h-10">
+                <!-- Head -->
+                <rect x="25" y="25" width="50" height="40" rx="8" fill="none" stroke="#00ff9f" stroke-width="4" />
+                <!-- Eyes -->
+                <circle cx="40" cy="45" r="4" fill="#00ff9f" class="animate-pulse" />
+                <circle cx="60" cy="45" r="4" fill="#00ff9f" class="animate-pulse" />
+                <!-- Antenna -->
+                <line x1="50" y1="25" x2="50" y1="15" stroke="#00ff9f" stroke-width="4" />
+                <circle cx="50" cy="12" r="3" fill="#00ff9f" />
+                <!-- Mouth -->
+                <path d="M40 55 Q50 60 60 55" fill="none" stroke="#00ff9f" stroke-width="2" />
+            </svg>
+            <span class="absolute -top-1 -right-1 w-3 h-3 bg-neon rounded-full animate-ping"></span>
+            
+            <!-- Tooltip -->
+            <span class="absolute left-20 bg-white text-black text-[10px] font-black py-2 px-4 rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl uppercase tracking-tighter">
+                ¡HOLA! SOY MTZ-BOT
+            </span>
+        </div>
     </div>
 
     <!-- Custom Scripts -->
