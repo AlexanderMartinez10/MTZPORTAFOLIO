@@ -410,21 +410,58 @@ function initDashboard() {
 function handleFileSelect(e) {
     const file = e.target.files[0];
     if (file) {
-        if (file.size > 2 * 1024 * 1024) { // 2MB Limit Warning
-            showToast("Archivo muy pesado. Esto podría fallar al guardar.", "error");
+        // Show Preview Container
+        const previewContainer = document.getElementById('p-preview-container');
+        previewContainer.classList.remove('hidden');
+
+        if (file.type.startsWith('video/')) {
+            convertVideoToGif(file);
+        } else {
+            if (file.size > 2 * 1024 * 1024) { // 2MB Limit Warning
+                showToast("Archivo muy pesado. Esto podría fallar al guardar.", "error");
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                selectedFileBase64 = event.target.result;
+                // Update Preview
+                const previewImg = document.getElementById('p-preview-img');
+                previewImg.src = selectedFileBase64;
+            };
+            reader.readAsDataURL(file);
         }
-        
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            selectedFileBase64 = event.target.result;
-            // Update Preview
-            const previewContainer = document.getElementById('p-preview-container');
-            const previewImg = document.getElementById('p-preview-img');
-            previewImg.src = selectedFileBase64;
-            previewContainer.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
     }
+}
+
+function convertVideoToGif(file) {
+    const processingOverlay = document.getElementById('p-processing');
+    const previewImg = document.getElementById('p-preview-img');
+    
+    processingOverlay.classList.remove('hidden');
+    
+    // Create a temporary URL for the video
+    const videoUrl = URL.createObjectURL(file);
+    
+    gifshot.createGIF({
+        video: [videoUrl],
+        gifWidth: 320,
+        gifHeight: 180,
+        interval: 0.1,        // 10 FPS
+        numFrames: 30,       // 3 seconds capture
+        frameDuration: 1,
+        sampleInterval: 10,
+        numWorkers: 2
+    }, function(obj) {
+        if(!obj.error) {
+            selectedFileBase64 = obj.image;
+            previewImg.src = selectedFileBase64;
+            showToast("Video optimizado a GIF con éxito", "success");
+        } else {
+            showToast("Error al procesar video: " + obj.errorMsg, "error");
+        }
+        processingOverlay.classList.add('hidden');
+        URL.revokeObjectURL(videoUrl);
+    });
 }
 
 function switchTab(tabId) {

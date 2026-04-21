@@ -37,6 +37,8 @@
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="style.css">
+    <!-- Media Processing Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.4.5/gifshot.min.js"></script>
 </head>
 <body class="font-sans antialiased">
     <div class="space-bg"></div>
@@ -637,8 +639,8 @@
                                 <input type="text" id="p-title" placeholder="Ej: E-commerce Plus" class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 focus:outline-none">
                             </div>
                             <div class="space-y-4 col-span-full md:col-span-1">
-                                <label class="text-[10px] text-white/40 uppercase tracking-widest font-bold ml-2">Archivo GIF / Imagen</label>
-                                <input type="file" id="p-file" accept="image/*" class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-neon file:text-black hover:file:bg-white transition-all">
+                                <label class="text-[10px] text-white/40 uppercase tracking-widest font-bold ml-2">Archivo GIF / Video / Imagen</label>
+                                <input type="file" id="p-file" accept="image/*,video/*" class="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-3 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-neon file:text-black hover:file:bg-white transition-all">
                             </div>
                             <div class="space-y-4 col-span-full">
                                 <label class="text-[10px] text-white/40 uppercase tracking-widest font-bold ml-2">Enlace de la Web (URL)</label>
@@ -646,7 +648,11 @@
                             </div>
 
                             <!-- Preview Area -->
-                            <div id="p-preview-container" class="hidden col-span-full space-y-4">
+                            <div id="p-preview-container" class="hidden col-span-full space-y-4 relative">
+                                <div id="p-processing" class="hidden absolute inset-0 z-10 bg-black/80 flex flex-col items-center justify-center rounded-2xl border border-neon/30">
+                                    <div class="w-10 h-10 border-4 border-neon border-t-transparent rounded-full animate-spin mb-4"></div>
+                                    <p class="text-[10px] text-neon font-black uppercase tracking-[0.3em]">Convirtiendo a GIF comprimido...</p>
+                                </div>
                                 <p class="text-[10px] text-neon uppercase tracking-widest font-bold ml-2 text-center">Vista Previa del Archivo</p>
                                 <div class="w-full aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center">
                                     <img id="p-preview-img" src="" class="w-full h-full object-cover">
